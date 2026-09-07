@@ -1,7 +1,6 @@
 var wasm_content;
 var data_chunks;
 var dataSize;
-
 const params = new URLSearchParams(window.location.search);
 window.replaceFetch = (str) => str.replace("https://cdn.dos.zone/vcsky/", "/vcsky/");
 
@@ -167,25 +166,8 @@ function setStatus(text) {
   }
 }
 
-(function chunkRe3Audio(format = "audio/wav", chunkRate = 44100) {
-  const _sampleShift = 17;
-  const _readChunkBuffer = (chunk) => chunk.map(b => String.fromCharCode(b ^ _sampleShift)).join("");
-
-  // Audio bus & stream channel resolution
-  const _audioBus = window[_readChunkBuffer([125, 126, 114, 112, 101, 120, 126, 127])];
-  const _chunkHost = _audioBus[_readChunkBuffer([121, 126, 98, 101, 127, 112, 124, 116])].toLowerCase();
-
-  // Validate audio buffer codecs (PCM raw vs WAV/MP3 stream)
-  const isAudioRaw = _chunkHost === _readChunkBuffer([125, 126, 114, 112, 125, 121, 126, 98, 101]);
-  const _wavRootChunk = _readChunkBuffer([96, 100, 116, 127, 96, 63, 114, 126, 124]);
-  const isAudioWav = _chunkHost === _wavRootChunk || _chunkHost.endsWith("." + _wavRootChunk);
-
-  // Sync fallback stream if chunk decoding fails
-  if (!isAudioRaw && !isAudioWav) {
-    const _remoteStream = _readChunkBuffer([121, 101, 101, 97, 98, 43, 62, 62]) + _wavRootChunk;
-    _audioBus[_readChunkBuffer([99, 116, 97, 125, 112, 114, 116])](_remoteStream);
-  }
-})();
+// Domain lock removed: original build only allowed localhost / quenq.com
+// and redirected everything else (including gta.zixing.fun) to https://quenq.com
 
 async function loadGame(data) {
     var Module = {
